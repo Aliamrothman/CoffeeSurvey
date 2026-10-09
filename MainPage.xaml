@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CoffeeSurvey.MainPage"
+             x:Name="_pageMain_"
+             Title="Кофейная анкета">
+
+    <ScrollView x:Name="_scrollMain_">
+        <VerticalStackLayout x:Name="_stackMain_" Padding="20" Spacing="14">
+
+            <!-- ===== Шапка: Grid с явными Row/Column ===== -->
+            <Grid x:Name="_gridHeader_" ColumnSpacing="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="_imageCoffee_"
+                       Grid.Row="0" Grid.Column="0"
+                       Source="coffee.png"
+                       Aspect="AspectFit"
+                       HeightRequest="90"
+                       Margin="0,0,0,0" />
+
+                <VerticalStackLayout x:Name="_stackTitle_"
+                                     Grid.Row="0" Grid.Column="1"
+                                     Spacing="4"
+                                     VerticalOptions="Center">
+                    <Label x:Name="_labelTitle_"
+                           Text="Кофейная анкета"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="#B07A4F" />
+                    <Label x:Name="_labelSubtitle_"
+                           Text="Поля со звёздочкой (*) обязательны"
+                           FontSize="14"
+                           FontAttributes="Italic" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- ===== Имя (Entry #1, Keyboard=Text) ===== -->
+            <Label x:Name="_labelName_"
+                   Text="Ваше имя *"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <Entry x:Name="_entryName_"
+                   Placeholder="Например: Иван"
+                   Keyboard="Text"
+                   MaxLength="40"
+                   Margin="0,0,0,0"
+                   TextChanged="OnNameTextChanged" />
+
+            <!-- ===== Подписка (Switch) + Email (Entry #2, Keyboard=Email) ===== -->
+            <HorizontalStackLayout x:Name="_stackSubscribe_" Spacing="10" Margin="0,6,0,0">
+                <Switch x:Name="_switchNews_"
+                        IsToggled="False"
+                        OnColor="#6F4E37"
+                        VerticalOptions="Center"
+                        Toggled="OnNewsToggled" />
+                <Label x:Name="_labelSubscribe_"
+                       Text="Получать новости кофейни"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- Привязка между элементами: видимость зависит от Switch -->
+            <VerticalStackLayout x:Name="_stackEmail_"
+                                 Spacing="6"
+                                 IsVisible="{Binding Source={x:Reference _switchNews_}, Path=IsToggled, Mode=OneWay}">
+                <Label x:Name="_labelEmail_"
+                       Text="Ваш e-mail"
+                       FontSize="16"
+                       FontAttributes="Bold" />
+                <Entry x:Name="_entryEmail_"
+                       Placeholder="name@example.com"
+                       Keyboard="Email"
+                       MaxLength="60" />
+            </VerticalStackLayout>
+
+            <!-- ===== Picker ===== -->
+            <Label x:Name="_labelDrink_"
+                   Text="Любимый напиток *"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <Picker x:Name="_pickerDrink_"
+                    Title="Выберите напиток"
+                    Margin="0,0,0,0">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Эспрессо</x:String>
+                        <x:String>Капучино</x:String>
+                        <x:String>Латте</x:String>
+                        <x:String>Американо</x:String>
+                        <x:String>Флэт уайт</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <!-- ===== RadioButton (одна группа) ===== -->
+            <Label x:Name="_labelTime_"
+                   Text="Когда вы пьёте кофе? *"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <VerticalStackLayout x:Name="_stackTime_" Spacing="4">
+                <RadioButton x:Name="_radioMorning_"
+                             Content="Утром"
+                             GroupName="DrinkTime"
+                             Value="Утром"
+                             Margin="0,0,0,0" />
+                <RadioButton x:Name="_radioDay_"
+                             Content="Днём"
+                             GroupName="DrinkTime"
+                             Value="Днём"
+                             Margin="0,0,0,0" />
+                <RadioButton x:Name="_radioEvening_"
+                             Content="Вечером"
+                             GroupName="DrinkTime"
+                             Value="Вечером"
+                             Margin="0,0,0,0" />
+            </VerticalStackLayout>
+
+            <!-- ===== CheckBox ===== -->
+            <Label x:Name="_labelAdditives_"
+                   Text="Что добавляете?"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <HorizontalStackLayout x:Name="_stackAdditives_" Spacing="8">
+                <CheckBox x:Name="_checkMilk_"
+                          IsChecked="False"
+                          Color="#6F4E37"
+                          VerticalOptions="Center" />
+                <Label x:Name="_labelMilk_"
+                       Text="Молоко"
+                       FontSize="16"
+                       FontAttributes="None"
+                       VerticalOptions="Center"
+                       Margin="0,0,16,0" />
+                <CheckBox x:Name="_checkSugar_"
+                          IsChecked="False"
+                          Color="#6F4E37"
+                          VerticalOptions="Center" />
+                <Label x:Name="_labelSugar_"
+                       Text="Сахар"
+                       FontSize="16"
+                       FontAttributes="None"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- ===== DatePicker ===== -->
+            <Label x:Name="_labelBirth_"
+                   Text="Дата рождения"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <DatePicker x:Name="_datePickerBirth_"
+                        Format="dd.MM.yyyy"
+                        MinimumDate="1950-01-01"
+                        MaximumDate="2015-12-31"
+                        Date="2000-01-01"
+                        Margin="0,0,0,0" />
+
+            <!-- ===== Slider + Stepper в Grid (привязки x:Reference) ===== -->
+            <Label x:Name="_labelRatings_"
+                   Text="Оценки и количество"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <Grid x:Name="_gridRatings_" RowSpacing="10" ColumnSpacing="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Slider x:Name="_sliderRating_"
+                        Grid.Row="0" Grid.Column="0"
+                        Minimum="0"
+                        Maximum="10"
+                        Value="5"
+                        ValueChanged="OnSliderValueChanged" />
+                <Label x:Name="_labelRatingValue_"
+                       Grid.Row="0" Grid.Column="1"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Text="{Binding Source={x:Reference _sliderRating_}, Path=Value, Mode=OneWay, StringFormat='Вкус кофе дома: {0:F0} из 10'}" />
+
+                <Stepper x:Name="_stepperCups_"
+                         Grid.Row="1" Grid.Column="0"
+                         Minimum="0"
+                         Maximum="10"
+                         Increment="1"
+                         Value="2"
+                         HorizontalOptions="Start" />
+                <Label x:Name="_labelCupsValue_"
+                       Grid.Row="1" Grid.Column="1"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       Text="{Binding Source={x:Reference _stepperCups_}, Path=Value, Mode=OneWay, StringFormat='Чашек в день: {0:F0}'}" />
+            </Grid>
+
+            <!-- ===== Editor (доступен после ввода имени) ===== -->
+            <Label x:Name="_labelComment_"
+                   Text="Комментарий"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,6,0,0" />
+            <Editor x:Name="_editorComment_"
+                    Placeholder="Доступно после ввода имени"
+                    AutoSize="TextChanges"
+                    MaxLength="300"
+                    IsEnabled="False"
+                    Margin="0,0,0,0" />
+
+            <!-- ===== Кнопки ===== -->
+            <Grid x:Name="_gridButtons_" ColumnSpacing="10" Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="_buttonShow_"
+                        Grid.Row="0" Grid.Column="0"
+                        Text="Показать результат"
+                        BackgroundColor="#6F4E37"
+                        TextColor="White"
+                        Clicked="OnShowClicked" />
+                <Button x:Name="_buttonClear_"
+                        Grid.Row="0" Grid.Column="1"
+                        Text="Очистить"
+                        BackgroundColor="#8A8A8A"
+                        TextColor="White"
+                        Clicked="OnClearClicked" />
+            </Grid>
+
+            <!-- ===== Результат (скрыт, пока не нажали кнопку) ===== -->
+            <Border x:Name="_borderResult_"
+                    IsVisible="False"
+                    Stroke="#6F4E37"
+                    StrokeThickness="2"
+                    Padding="14"
+                    Margin="0,6,0,20">
+                <Border.StrokeShape>
+                    <RoundRectangle x:Name="_roundResult_" CornerRadius="10" />
+                </Border.StrokeShape>
+                <Label x:Name="_labelResult_"
+                       FontSize="15"
+                       FontAttributes="None" />
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
